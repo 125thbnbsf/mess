@@ -1,0 +1,1844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>125 BN BSF MESS MANAGEMENT SYSTEM - BASANTAR WARRIORS</title>
+<style>
+  :root {
+    --bsf-red: #8B0000;
+    --bsf-dark-red: #580000;
+    --og-dark: #2B3314;
+    --og-main: #3D451D;
+    --og-light: #525C27;
+    --og-border: #4E5926;
+    --gold: #D4AF37;
+    --gold-bright: #FFD700;
+    --sand-bg: #EAE6DF;
+    --sand-border: #D1C7BD;
+    --text-dark: #1E2310;
+    --text-muted: #616654;
+    --white: #FFFFFF;
+    --danger: #B22222;
+    --success: #2E7D32;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+  body { background-color: var(--sand-bg); color: var(--text-dark); min-height: 100vh; display: flex; flex-direction: column; position: relative; }
+
+  /* Military Header */
+  .military-header {
+    background: linear-gradient(135deg, var(--bsf-dark-red) 0%, var(--bsf-red) 50%, var(--bsf-dark-red) 100%);
+    border-bottom: 4px solid var(--gold);
+    color: var(--white);
+    padding: 12px 20px;
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  }
+  .header-content { text-align: center; max-width: 1400px; margin: 0 auto; }
+  .script-title {
+    font-family: 'Edwardian Script ITC', 'Brush Script MT', 'Great Vibes', cursive, sans-serif;
+    font-size: 1.85rem;
+    color: var(--gold-bright);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+    line-height: 1.2;
+    margin-bottom: 2px;
+    letter-spacing: 0.8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .sub-title {
+    font-size: 1.2rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--white);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+  }
+  .header-cycle-badge {
+    display: inline-block;
+    background-color: var(--og-dark);
+    color: var(--gold-bright);
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 3px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--gold);
+    margin-top: 5px;
+    letter-spacing: 0.8px;
+  }
+
+  /* Auth Strip */
+  .auth-strip {
+    background-color: var(--og-dark);
+    color: var(--sand-bg);
+    padding: 8px 24px;
+    font-size: 0.88rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--og-border);
+    position: relative;
+    z-index: 10;
+  }
+  .auth-strip span strong { color: var(--gold-bright); }
+  .auth-actions { display: flex; gap: 8px; align-items: center; }
+  .logout-btn {
+    background-color: var(--bsf-red);
+    color: var(--white);
+    border: 1px solid var(--gold);
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  /* Main Container */
+  .main-app {
+    flex: 1;
+    max-width: 1400px;
+    width: 100%;
+    margin: 18px auto;
+    padding: 0 18px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Footer */
+  .military-footer {
+    background: linear-gradient(135deg, var(--og-dark) 0%, var(--og-main) 100%);
+    border-top: 3px solid var(--gold);
+    color: var(--white);
+    text-align: center;
+    padding: 16px 20px;
+    margin-top: auto;
+    position: relative;
+    z-index: 10;
+  }
+  .footer-motto { font-size: 1.35rem; font-weight: 900; color: var(--gold-bright); letter-spacing: 3px; margin-bottom: 4px; }
+  .footer-credit { font-size: 0.92rem; font-weight: 600; color: #E0E5D0; letter-spacing: 1px; }
+  .footer-dev { font-size: 0.88rem; color: #C5CEAB; margin-top: 2px; }
+
+  /* Utility Components */
+  .btn {
+    background-color: var(--og-main);
+    color: var(--white);
+    border: 1px solid var(--og-border);
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn:hover { background-color: var(--og-light); }
+  .btn-gold { background-color: var(--gold); color: #000; border-color: #B8972D; }
+  .btn-gold:hover { background-color: var(--gold-bright); }
+  .btn-danger { background-color: var(--danger); border-color: #8B0000; }
+  .btn-sm { padding: 4px 8px; font-size: 0.78rem; }
+
+  /* Login Card */
+  .login-card {
+    max-width: 460px;
+    margin: 60px auto;
+    background: var(--white);
+    border: 2px solid var(--og-border);
+    border-radius: 8px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.18);
+    overflow: hidden;
+  }
+  .login-header {
+    background-color: var(--og-dark);
+    color: var(--gold-bright);
+    padding: 16px;
+    text-align: center;
+    font-weight: 900;
+    font-size: 1.2rem;
+    border-bottom: 3px solid var(--gold);
+  }
+  .login-body { padding: 26px; }
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-weight: 700; margin-bottom: 6px; color: var(--og-dark); font-size: 0.9rem; }
+  .form-control {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--sand-border);
+    border-radius: 4px;
+    font-size: 0.95rem;
+    background-color: #FAFAFA;
+  }
+
+  /* Modal Overlay */
+  .modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000;
+  }
+  .modal-box {
+    background: var(--white); border: 2px solid var(--og-border); border-radius: 8px; width: 500px; max-width: 90%; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  }
+
+  /* Control Panel & Dashboard Layout */
+  .dashboard-layout { display: grid; grid-template-columns: 420px 1fr; gap: 22px; }
+  @media(max-width: 1024px) { .dashboard-layout { grid-template-columns: 1fr; } }
+
+  .control-panel {
+    background: var(--white);
+    border: 2px solid var(--og-border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .panel-title {
+    background-color: var(--og-dark);
+    color: var(--gold-bright);
+    padding: 10px 14px;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 900;
+    margin-bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .grid-3x3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .cp-btn {
+    aspect-ratio: 1;
+    background-color: var(--og-main);
+    color: var(--white);
+    border: 2px solid var(--og-border);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8px 4px;
+    cursor: pointer;
+    gap: 6px;
+  }
+  .cp-btn:hover { background-color: var(--og-light); border-color: var(--gold); }
+  .cp-btn.active-tab { background-color: var(--bsf-red); border-color: var(--gold-bright); }
+  .cp-btn svg { width: 26px; height: 26px; fill: var(--gold-bright); }
+  .cp-btn span { font-size: 0.74rem; font-weight: 700; }
+
+  .live-dashboard {
+    background: var(--white);
+    border: 2px solid var(--og-border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-bottom: 16px; }
+  .metric-card {
+    background-color: #F6F8F0;
+    border-left: 4px solid var(--og-main);
+    border-radius: 4px;
+    padding: 12px 14px;
+    border: 1px solid var(--sand-border);
+  }
+  .metric-label { font-size: 0.78rem; text-transform: uppercase; font-weight: 800; color: var(--text-muted); }
+  .metric-val { font-size: 1.45rem; font-weight: 900; color: var(--og-dark); margin-top: 4px; }
+  .metric-sub { font-size: 0.75rem; color: #555; margin-top: 2px; }
+
+  /* Table styling */
+  .table-responsive { width: 100%; overflow-x: auto; margin-top: 10px; }
+  .military-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; background: #FFF; }
+  .military-table th, .military-table td { border: 1px solid #C8CEB5; padding: 6px 8px; text-align: left; vertical-align: middle; }
+  .military-table th { background-color: var(--og-main); color: var(--white); font-weight: 700; white-space: nowrap; }
+  .military-table th.sub-th { background-color: var(--og-light); font-size: 0.76rem; text-align: center; }
+  .military-table tr:nth-child(even) { background-color: #F8FAF2; }
+  .military-table tfoot td { background-color: #E2E8D3; font-weight: 900; color: var(--og-dark); }
+
+  .cycle-bar {
+    background: #E8EDE0;
+    border: 1px solid #BDC7A7;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .cycle-title { font-weight: 900; color: var(--og-dark); font-size: 0.95rem; }
+
+  .matrix-table-wrap { overflow-x: auto; max-width: 100%; border: 1px solid #B0BC98; background: #FFF; }
+  .matrix-table { border-collapse: collapse; font-size: 0.74rem; width: 100%; }
+  .matrix-table th, .matrix-table td { border: 1px solid #CAD4B8; padding: 4px 3px; text-align: center; white-space: nowrap; }
+  .matrix-table th { background-color: var(--og-main); color: #FFF; font-size: 0.72rem; }
+  .matrix-table th.sticky-col, .matrix-table td.sticky-col {
+    position: sticky; left: 0; background-color: #F2F5EB; z-index: 2; text-align: left; padding-left: 6px; font-weight: 700;
+  }
+  .matrix-table th.sticky-col { background-color: var(--og-dark); z-index: 3; }
+  .diet-input { width: 38px; padding: 2px; font-size: 0.75rem; font-weight: 700; text-align: center; border: 1px solid #B4C09E; border-radius: 2px; background: #FAFFF2; }
+
+  .badge { padding: 2px 6px; border-radius: 3px; font-size: 0.72rem; font-weight: 700; display: inline-block; }
+  .badge-success { background: #E8F5E9; color: #2E7D32; border: 1px solid #A5D6A7; }
+  .badge-danger { background: #FFEBEE; color: #C62828; border: 1px solid #EF9A9A; }
+  .badge-og { background: #E8EDE0; color: #2B3314; border: 1px solid #BDC7A7; }
+  .badge-archived { background: #E0E0E0; color: #616161; border: 1px solid #9E9E9E; }
+
+  .batch-detail-box {
+    font-size: 0.75rem; font-weight: 700; color: #2B3314; background: #F1F5E8; padding: 4px 6px; border-radius: 4px; border-left: 3px solid var(--og-main); line-height: 1.4; word-break: break-word; min-width: 170px;
+  }
+  .batch-total-sub { font-size: 0.74rem; color: #444; margin-top: 3px; font-weight: 800; }
+  .amt-cell { font-weight: 900; text-align: right; white-space: nowrap; min-width: 95px; font-size: 0.88rem; }
+
+  /* Printable Engine */
+  #printableContainer { display: none; }
+  @media print {
+    body > *:not(#printableContainer) { display: none !important; }
+    #printableContainer {
+      display: block !important; position: absolute; left: 0; top: 0; width: 100%; background: #FFF; color: #000; padding: 20px;
+    }
+    .print-header { border-bottom: 2px solid #000; text-align: center; padding-bottom: 8px; margin-bottom: 12px; }
+    .print-header h2 { font-size: 1.25rem; font-weight: 900; margin-bottom: 2px; }
+    .print-header h4 { font-size: 1rem; font-weight: 800; color: #333; margin-bottom: 4px; }
+    .print-header p { font-size: 0.85rem; font-weight: 700; }
+    .print-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
+    .print-table th, .print-table td { border: 1px solid #000; padding: 6px 8px; text-align: left; }
+    .print-table th { background: #EEE; font-weight: 900; }
+    .print-table tfoot td { font-weight: 900; background: #F5F5F5; }
+    .print-signatures {
+      margin-top: 50px; display: flex; justify-content: space-between; text-align: center; font-size: 0.88rem; font-weight: 800;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="military-header">
+  <div class="header-content">
+    <div class="script-title">Basantar Warriors – Courage Beyond Limits….</div>
+    <div class="sub-title">125 BN BSF MESS MANAGEMENT SYSTEM</div>
+    <div class="header-cycle-badge" id="currentCycleBadge">
+      MESS MONTH: 21 SEP – 20 OCT 2026 (30 DAYS)
+    </div>
+  </div>
+</header>
+
+<!-- Auth Strip -->
+<div class="auth-strip" id="authStrip" style="display:none;">
+  <div>
+    <span>LOGGED IN AS: <strong id="loggedRoleText">MESS NCO</strong></span> | 
+    <span>MONTH: <strong id="stripCycleText">21 Sep to 20 Oct (30 Days)</strong></span> | 
+    <span>DIET RATE: <strong id="stripRateText">₹132.50 / Day</strong></span>
+  </div>
+  <div class="auth-actions">
+    <button class="btn btn-sm btn-gold" onclick="changeMyPasswordPrompt()">CHANGE PASSWORD</button>
+    <button class="logout-btn" onclick="logout()">LOGOUT & AUTO-BACKUP</button>
+  </div>
+</div>
+
+<!-- Main App Root -->
+<main class="main-app">
+
+  <!-- 1. LOGIN SECTION -->
+  <section id="loginSection" class="login-card">
+    <div class="login-header">MESS AUTHORIZED ACCESS</div>
+    <div class="login-body">
+      <div class="form-group" style="text-align:center; margin-bottom:14px; background:#F2F5EB; padding:10px; border-radius:4px; border:1px solid #C8CEB5;">
+        <label style="font-size:0.85rem; margin-bottom:6px;">यदि आपके पास अतिरिक्त बैकअप फाइल है:</label>
+        <button class="btn btn-sm btn-gold" onclick="importBackupPrompt()">📂 RESTORE FROM FILE</button>
+      </div>
+      <div class="form-group">
+        <label>SELECT APPOINTMENT / ROLE:</label>
+        <select class="form-control" id="loginRole">
+          <option value="NCO">MESS NCO</option>
+          <option value="SO">MESS SO</option>
+          <option value="OFFICER">MESS OFFICER</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>SECURITY 4-DIGIT PIN (DEFAULT: 1234):</label>
+        <input type="password" maxlength="4" class="form-control" id="loginPin" placeholder="Enter PIN">
+      </div>
+      <button class="btn btn-gold" style="width:100%; justify-content:center;" onclick="handleLogin()">
+        UNLOCK SYSTEM
+      </button>
+    </div>
+  </section>
+
+  <!-- 2. WORKSPACE SECTION -->
+  <section id="workspaceSection" style="display:none;">
+
+    <!-- Month Ribbon with Previous/Next Buttons -->
+    <div class="cycle-bar">
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+        <span class="cycle-title">MESS MONTH:</span>
+        <button class="btn btn-sm btn-gold" onclick="changeMonthOffset(-1)">◄ Previous</button>
+        <select id="cycleSelector" class="form-control" style="width: auto; display: inline-block; padding: 4px 8px; font-weight: 700;" onchange="onCycleChange()">
+          <!-- Populated dynamically for lifetime -->
+        </select>
+        <button class="btn btn-sm btn-gold" onclick="changeMonthOffset(1)">Next ►</button>
+      </div>
+      <div style="font-size: 0.85rem; font-weight: 700; color: var(--og-dark);">
+        Month Span: <span id="cycleSpanText" style="color:var(--bsf-red);">Sep 21, 2026 – Oct 20, 2026</span> | 
+        Total Month Days: <span id="cycleDaysCount" style="color:var(--bsf-red);">30</span> Days
+      </div>
+    </div>
+
+    <!-- Control Panel & Dashboard Grid -->
+    <div class="dashboard-layout">
+      
+      <!-- Control Panel -->
+      <div class="control-panel">
+        <div class="panel-title"><span>CONTROL PANEL</span></div>
+        <div class="grid-3x3">
+          <button class="cp-btn active-tab" onclick="switchView('dashboardView')">
+            <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+            <span>DASHBOARD</span>
+          </button>
+          <button class="cp-btn" onclick="switchView('attendanceView')">
+            <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+            <span>ATTENDANCE MATRIX</span>
+          </button>
+          <button class="cp-btn" onclick="switchView('dryRationView')">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+            <span>DRY RATION</span>
+          </button>
+          <button class="cp-btn" onclick="switchView('freshRationView')">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+            <span>FRESH RATION</span>
+          </button>
+          <button class="cp-btn" onclick="switchView('membersView')">
+            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 1.34 5 3s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+            <span>MEMBER REGISTRATION</span>
+          </button>
+          <button class="cp-btn" onclick="switchView('rateView')">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 2h2v3h-2V5zm-4 0h2v3H8V5zm0 5h2v3H8v-3zm0 5h2v3H8v-3zm4 3v-3h2v3h-2zm0-5v-3h2v3h-2zm4 5v-3h2v3h-2zm0-5v-3h2v3h-2zm0-5h2v3H8V5z"/></svg>
+            <span>RMA & RATES</span>
+          </button>
+          <button class="cp-btn" onclick="switchView('casualPrisonerView')">
+            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            <span>CASUAL & PRISONER</span>
+          </button>
+          <button class="cp-btn" onclick="switchView('summaryView')">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+            <span>MASTER SUMMARY</span>
+          </button>
+          <button class="cp-btn" onclick="switchView('backupView')">
+            <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+            <span>BACKUP & AUDIT</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Right Dashboard Content -->
+      <div class="live-dashboard">
+
+        <!-- 1. DASHBOARD -->
+        <div id="dashboardView" class="subview">
+          <div class="panel-title"><span>DASHBOARD</span><span id="dashLiveTime">MONTHLY OVERVIEW</span></div>
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-label">Month Diet Rate (RMA)</div>
+              <div class="metric-val" id="dashRate">₹132.50</div>
+              <div class="metric-sub">Locked Monthly Rate</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Total Diets Consumed</div>
+              <div class="metric-val" id="dashDiets">0.0</div>
+              <div class="metric-sub">Regular + Casual + Prisoner</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Total Ration Exp. (Dry+Fresh)</div>
+              <div class="metric-val" id="dashExp">₹0.00</div>
+              <div class="metric-sub">Expenditure during month</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Total Mess Recovery</div>
+              <div class="metric-val" id="dashIncome">₹0.00</div>
+              <div class="metric-sub">Total Recovery Amount</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. ATTENDANCE MATRIX -->
+        <div id="attendanceView" class="subview" style="display:none;">
+          <div class="panel-title">
+            <span>ATTENDANCE MATRIX (MONTHLY)</span>
+            <div>
+              <button class="btn btn-gold btn-sm" onclick="printFormattedMessCutting()">PRINT MESS CUTTING BILL</button>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; background:#F2F5EB; padding:10px; border-radius:4px; margin-bottom:10px; gap:8px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <label style="font-weight:700; font-size:0.85rem;">SELECT COY / SUB-UNIT:</label>
+              <select id="attendanceCoyFilter" class="form-control" style="width:160px; padding:4px 8px;" onchange="renderAttendanceMatrix()">
+                <option value="A COY">A COY</option><option value="B COY">B COY</option><option value="C COY">C COY</option><option value="D COY">D COY</option>
+                <option value="E COY">E COY</option><option value="F COY">F COY</option><option value="G COY">G COY</option><option value="HQ COY">HQ COY</option>
+                <option value="SP COY">SP COY</option><option value="MIN STAFF">MIN STAFF</option><option value="SIGNAL PL">SIGNAL PL</option><option value="MT PL">MT PL</option><option value="MEDICAL">MEDICAL</option>
+              </select>
+            </div>
+            <div style="display:flex; gap:6px;">
+              <button class="btn btn-sm" onclick="bulkFillAll(1.0)">FILL ALL 1.0 (FULL)</button>
+              <button class="btn btn-sm btn-danger" onclick="bulkFillAll(0.0)">FILL ALL 0.0 (LEAVE)</button>
+            </div>
+          </div>
+
+          <div class="matrix-table-wrap">
+            <table class="matrix-table" id="cycleAttendanceMatrixTable">
+              <thead><tr id="matrixHeaderRow"></tr></thead>
+              <tbody id="matrixBody"></tbody>
+              <tfoot><tr id="matrixFooterRow"></tr></tfoot>
+            </table>
+          </div>
+        </div>
+
+        <!-- 3. DRY RATION -->
+        <div id="dryRationView" class="subview" style="display:none;">
+          <div class="panel-title">
+            <span>DRY RATION (FIFO & MULTI-BATCH)</span>
+            <div style="display:flex; gap:6px;">
+              <button class="btn btn-sm btn-gold" onclick="printDryRationSummary()">PRINT DRY SUMMARY</button>
+              <button class="btn btn-sm btn-gold" onclick="addNewDryItem()">+ ADD ITEM</button>
+              <button class="btn btn-sm" onclick="rollOverDryRation()">ROLLOVER TO NEXT MONTH</button>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="military-table" id="dryRationTable">
+              <thead>
+                <tr>
+                  <th rowspan="2">ITEM NAME</th>
+                  <th colspan="2" class="sub-th">RECEIVED FROM LAST MONTH (MULTI-BATCH)</th>
+                  <th colspan="2" class="sub-th">PURCHASED DURING MONTH</th>
+                  <th colspan="2" class="sub-th">GRAND TOTAL</th>
+                  <th colspan="2" class="sub-th">EXPENDITURE (FIFO)</th>
+                  <th colspan="2" class="sub-th">NEXT MONTH BALANCE</th>
+                  <th rowspan="2" class="sub-th">ACTIONS</th>
+                </tr>
+                <tr>
+                  <th class="sub-th">QTY</th><th class="sub-th">AMT (₹)</th><th class="sub-th">QTY</th><th class="sub-th">AMT (₹)</th><th class="sub-th">QTY</th><th class="sub-th">AMT (₹)</th><th class="sub-th">QTY</th><th class="sub-th">AMT (₹)</th><th class="sub-th">QTY</th><th class="sub-th">AMT (₹)</th>
+                </tr>
+              </thead>
+              <tbody id="dryRationBody"></tbody>
+              <tfoot>
+                <tr>
+                  <td>TOTAL DRY RATION (₹)</td><td></td><td id="dryTotalRecAmt" class="amt-cell">₹0.00</td><td></td><td id="dryTotalPurAmt" class="amt-cell">₹0.00</td><td></td><td id="dryTotalGTotalAmt" class="amt-cell">₹0.00</td><td></td><td id="dryTotalExpAmt" class="amt-cell" style="color:var(--bsf-red);">₹0.00</td><td></td><td id="dryTotalNextAmt" class="amt-cell">₹0.00</td><td></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <!-- 4. FRESH RATION -->
+        <div id="freshRationView" class="subview" style="display:none;">
+          <div class="panel-title"><span>FRESH RATION</span></div>
+          <div class="table-responsive">
+            <table class="military-table" style="max-width:900px;">
+              <thead>
+                <tr><th>COLUMN / विवरण</th><th style="width:280px;">AMOUNT (₹)</th><th>प्रकार</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>a. Received from Last Month Balance</strong></td><td><input type="number" id="freshRecAmtInput" class="form-control" value="0.00" onchange="updateFreshSummary()"></td><td><span class="badge badge-og">Manual Opening</span></td></tr>
+                <tr><td><strong>b. Purchased During the Month</strong></td><td><input type="number" id="freshPurAmtInput" class="form-control" value="0.00" onchange="updateFreshSummary()"></td><td><span class="badge badge-og">Manual Entry</span></td></tr>
+                <tr style="background:#F2F5EB;"><td><strong>c. Grand Total (Received + Purchased)</strong></td><td id="freshGTotalCell" style="font-weight:900; font-size:1.05rem;">₹0.00</td><td><span class="badge badge-success">Automatic</span></td></tr>
+                <tr style="background:#FFF9C4;"><td><strong>d. Expenditure During the Month</strong></td><td id="freshExpCell" style="font-weight:900; font-size:1.05rem; color:var(--bsf-red);">₹0.00</td><td><span class="badge badge-success">Automatic</span></td></tr>
+                <tr><td><strong>e. Next Month Balance</strong></td><td><input type="number" id="freshNextAmtInput" class="form-control" value="0.00" onchange="updateFreshSummary()"></td><td><span class="badge badge-og">Manual Entry</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 5. MEMBER REGISTRATION -->
+        <div id="membersView" class="subview" style="display:none;">
+          <div class="panel-title">
+            <span>MEMBER REGISTRATION (FORM & EXCEL UPLOAD)</span>
+            <div style="display:flex; gap:6px;">
+              <input type="file" id="excelUploadInput" accept=".csv, .xlsx, .xls" style="display:none;" onchange="handleStrictExcelUpload(event)">
+              <button class="btn btn-gold btn-sm" onclick="document.getElementById('excelUploadInput').click()">UPLOAD EXCEL</button>
+              <button class="btn btn-sm" onclick="downloadTemplateCSV()">SAMPLE FORMAT</button>
+              <button class="btn btn-sm" onclick="openMemberModal()">+ OPEN FORM (BULK/SINGLE)</button>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="military-table">
+              <thead>
+                <tr><th>IRLA / REGT NO</th><th>RANK</th><th>NAME</th><th>COY</th><th>MOBILE NO</th><th>EMAIL ID</th><th>STATUS</th><th>ACTIONS</th></tr>
+              </thead>
+              <tbody id="membersTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 6. RMA & RATES -->
+        <div id="rateView" class="subview" style="display:none;">
+          <div class="panel-title"><span>RMA & CASUAL RATES MANAGEMENT</span></div>
+          <div style="background:#FFF; padding:20px; border:1px solid #CCD4BF; border-radius:6px; max-width:800px;">
+            <h4 style="color:var(--og-dark); margin-bottom:12px;">1. MONTHLY DIET RATE (RMA)</h4>
+            <div class="form-group">
+              <label>MONTHLY RMA ALLOWANCE (₹):</label>
+              <input type="number" id="cfgRmaAmount" class="form-control" value="3975.00">
+            </div>
+            <div class="form-group">
+              <label>LOCKED PER DAY DIET RATE (₹):</label>
+              <input type="text" id="cfgCalculatedRate" class="form-control" value="₹132.50" readonly style="background:#F2F5EB; font-weight:900; color:var(--bsf-red);">
+            </div>
+
+            <h4 style="color:var(--og-dark); margin:18px 0 12px 0;">2. CASUAL DIET RATES (5 CATEGORIES)</h4>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+              <div class="form-group"><label>a. Breakfast (₹):</label><input type="number" id="casualRateA" class="form-control" value="35.00"></div>
+              <div class="form-group"><label>b. Breakfast + Lunch/Dinner (₹):</label><input type="number" id="casualRateB" class="form-control" value="100.00"></div>
+              <div class="form-group"><label>c. Lunch / Dinner (₹):</label><input type="number" id="casualRateC" class="form-control" value="65.00"></div>
+              <div class="form-group"><label>d. Lunch + Dinner (₹):</label><input type="number" id="casualRateD" class="form-control" value="130.00"></div>
+              <div class="form-group" style="grid-column: span 2;"><label>e. Complete Diet (₹):</label><input type="number" id="casualRateE" class="form-control" value="140.00"></div>
+            </div>
+
+            <button class="btn btn-gold" style="margin-top:10px;" onclick="saveAndLockRates()">SAVE & LOCK ALL RATES FOR THIS MONTH</button>
+          </div>
+        </div>
+
+        <!-- 7. CASUAL & PRISONER -->
+        <div id="casualPrisonerView" class="subview" style="display:none;">
+          <div class="panel-title"><span>CASUAL DIET & PRISONER (RI) REGISTERS</span></div>
+          <div style="margin-bottom:24px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <h4 style="color:var(--og-dark);">CASUAL DIET REGISTER</h4>
+              <div style="display:flex; gap:6px;">
+                <button class="btn btn-gold btn-sm" onclick="printCasualReport()">PRINT CASUAL BILL</button>
+                <button class="btn btn-sm" onclick="addCasualModalOpen()">+ ADD CASUAL ENTRY</button>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="military-table" id="casualTable">
+                <thead>
+                  <tr><th>REGT NO</th><th>RANK & NAME</th><th>UNIT</th><th>CATEGORY</th><th>DIETS</th><th>RATE (₹)</th><th>AMOUNT (₹)</th><th>STATUS</th><th>ACTIONS</th></tr>
+                </thead>
+                <tbody id="casualTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <h4 style="color:var(--og-dark);">PRISONER (RI) DIET REGISTER</h4>
+              <div style="display:flex; gap:6px;">
+                <button class="btn btn-gold btn-sm" onclick="printPrisonerReport()">PRINT PRISONER BILL</button>
+                <button class="btn btn-sm" onclick="openPrisonerModal()">+ ADD PRISONER (RI)</button>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="military-table" id="prisonerTable">
+                <thead>
+                  <tr><th>REGT NO</th><th>RANK & NAME</th><th>COY</th><th>PERIOD (FROM - TO)</th><th>ORDER NO</th><th>DIET</th><th>RATE (₹)</th><th>AMOUNT (₹)</th><th>REMARKS</th><th>ACTIONS</th></tr>
+                </thead>
+                <tbody id="prisonerTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8. MASTER SUMMARY -->
+        <div id="summaryView" class="subview" style="display:none;">
+          <div class="panel-title">
+            <span>MASTER FINANCIAL SUMMARY</span>
+            <button class="btn btn-gold btn-sm" onclick="printOfficialMasterSummary()">PRINT OFFICIAL SUMMARY</button>
+          </div>
+          <div class="table-responsive">
+            <table class="military-table" id="masterSummaryTable">
+              <thead>
+                <tr><th style="width:60px;">SL</th><th>HEAD OF ACCOUNT / SUMMARY ITEM</th><th style="width:200px; text-align:right;">AMOUNT (₹) / VALUE</th></tr>
+              </thead>
+              <tbody id="masterSummaryBody">
+                <!-- Dynamically rendered -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 9. BACKUP & AUDIT -->
+        <div id="backupView" class="subview" style="display:none;">
+          <div class="panel-title">
+            <span>SYSTEM BACKUP & AUDIT INSPECTION LOG</span>
+            <span style="font-size:0.8rem;">Restricted to Mess Officer</span>
+          </div>
+          <div id="officerAuditPanel" style="display:none;">
+            <div style="background:#FFF; padding:14px; border:1px solid #CCD4BF; border-radius:6px; margin-bottom:16px;">
+              <h4 style="color:var(--og-dark); margin-bottom:8px;">OFFICIAL GOOGLE DRIVE ARCHIVE:</h4>
+              <div style="display:flex; gap:10px;">
+                <button class="btn btn-gold" onclick="exportBackupJSON()">DOWNLOAD JSON BACKUP</button>
+                <button class="btn" onclick="importBackupPrompt()">RESTORE FROM BACKUP FILE</button>
+                <button class="btn" onclick="openDriveLink()">OPEN GOOGLE DRIVE</button>
+              </div>
+            </div>
+            <h4 style="color:var(--og-dark); margin-bottom:8px;">SECURITY AUDIT & INSPECTION LOGS (TAMPER MONITOR):</h4>
+            <div class="table-responsive" style="max-height:300px; overflow-y:auto;">
+              <table class="military-table" style="font-size:0.78rem;">
+                <thead>
+                  <tr><th>TIMESTAMP</th><th>USER / ROLE</th><th>ACTION</th><th>DETAILS</th></tr>
+                </thead>
+                <tbody id="auditTrailBody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div id="nonOfficerAuditMsg" style="padding:20px; font-weight:700; color:var(--danger); display:none;">
+            🔒 ACCESS RESTRICTED! Audit and Inspection logs can only be viewed by the MESS OFFICER.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- MEMBER REGISTRATION MODAL FORM -->
+<div class="modal-overlay" id="memberModalOverlay">
+  <div class="modal-box">
+    <div class="panel-title" style="margin-bottom:10px;"><span>MEMBER REGISTRATION FORM</span><button class="btn btn-danger btn-sm" onclick="closeMemberModal()">X</button></div>
+    <div class="form-group"><label>IRLA / REGT NO (कमा से अलग करें):</label><input type="text" id="modalRegt" class="form-control" placeholder="04125001, 04125002"></div>
+    <div class="form-group"><label>RANK:</label><input type="text" id="modalRank" class="form-control" placeholder="CT / HC / SI"></div>
+    <div class="form-group"><label>NAME(S) (कमा से अलग करें):</label><input type="text" id="modalName" class="form-control" placeholder="RAMESH SINGH, AMIT KUMAR"></div>
+    <div class="form-group">
+      <label>SELECT COY / SUB-UNIT:</label>
+      <select id="modalCoy" class="form-control">
+        <option value="A COY">A COY</option><option value="B COY">B COY</option><option value="C COY">C COY</option><option value="D COY">D COY</option>
+        <option value="E COY">E COY</option><option value="F COY">F COY</option><option value="G COY">G COY</option><option value="HQ COY">HQ COY</option>
+        <option value="SP COY">SP COY</option><option value="MIN STAFF">MIN STAFF</option><option value="SIGNAL PL">SIGNAL PL</option><option value="MT PL">MT PL</option><option value="MEDICAL">MEDICAL</option>
+      </select>
+    </div>
+    <button class="btn btn-gold" style="width:100%; justify-content:center;" onclick="submitMemberModal()">REGISTER & SYNC</button>
+  </div>
+</div>
+
+<!-- PRISONER REGISTRATION MODAL FORM -->
+<div class="modal-overlay" id="prisonerModalOverlay">
+  <div class="modal-box">
+    <div class="panel-title" style="margin-bottom:10px;"><span>ADD PRISONER (RI) ENTRY</span><button class="btn btn-danger btn-sm" onclick="closePrisonerModal()">X</button></div>
+    <div class="form-group"><label>REGT NO:</label><input type="text" id="pModalRegt" class="form-control" placeholder="04125001"></div>
+    <div class="form-group"><label>RANK & NAME:</label><input type="text" id="pModalName" class="form-control" placeholder="CT RAMESH SINGH"></div>
+    <div class="form-group"><label>COY:</label><input type="text" id="pModalCoy" class="form-control" value="A COY"></div>
+    <div class="form-group" style="display:flex; gap:10px;">
+      <div style="flex:1;"><label>RI FROM DATE:</label><input type="date" id="pModalFrom" class="form-control"></div>
+      <div style="flex:1;"><label>RI TO DATE:</label><input type="date" id="pModalTo" class="form-control"></div>
+    </div>
+    <div class="form-group"><label>ORDER NO:</label><input type="text" id="pModalOrder" class="form-control" placeholder="125/RO/26/89"></div>
+    <div class="form-group"><label>REMARKS (उदा. 7 DAYS RI):</label><input type="text" id="pModalRemarks" class="form-control" placeholder="7 Days RI"></div>
+    <button class="btn btn-gold" style="width:100%; justify-content:center;" onclick="submitPrisonerModal()">SAVE PRISONER RECORD</button>
+  </div>
+</div>
+
+<input type="file" id="importFile" accept=".json" style="display:none;" onchange="handleFileImport(event)">
+
+<div id="printableContainer"></div>
+
+<!-- Footer -->
+<footer class="military-footer">
+  <div class="footer-motto">"जीवन पर्यन्त कर्तव्य"</div>
+  <div class="footer-credit">DESIGNED & DEVELOPED BY – IT CELL 125 BN BSF</div>
+  <div class="footer-dev">DEVELOPER – ASI/RO VIJAY KUMAR MEENA</div>
+</footer>
+
+<script>
+let state = {
+  currentUser: null,
+  passwords: { NCO: "1234", SO: "1234", OFFICER: "1234" },
+  loginAttempts: { NCO: 0, SO: 0, OFFICER: 0 },
+  lockoutExpiry: { NCO: 0, SO: 0, OFFICER: 0 },
+  cycleStartDate: '2026-09-21',
+  cycleEndDate: '2026-10-20',
+  cycleDays: 30,
+  dailyRate: 132.50,
+  casualRates: { a: 35, b: 100, c: 65, d: 130, e: 140 },
+  members: [],
+  attendanceMap: {},
+  monthlyData: {}, // Month-wise data isolation
+  auditLogs: []
+};
+
+const STORAGE_KEY = 'bsf_125_mess_master_persistent_v17';
+
+const dbName = "BSFMessDB";
+const storeName = "appStateStore";
+
+function openIDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(dbName, 1);
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result);
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains(storeName)) {
+        db.createObjectStore(storeName);
+      }
+    };
+  });
+}
+
+async function saveToIDB(data) {
+  try {
+    const db = await openIDB();
+    const tx = db.transaction(storeName, "readwrite");
+    const store = tx.objectStore(storeName);
+    store.put(data, STORAGE_KEY);
+    return new Promise((resolve, reject) => {
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => reject(tx.error);
+    });
+  } catch (e) {
+    console.error("IDB save error:", e);
+  }
+}
+
+async function loadFromIDB() {
+  try {
+    const db = await openIDB();
+    const tx = db.transaction(storeName, "readonly");
+    const store = tx.objectStore(storeName);
+    const request = store.get(STORAGE_KEY);
+    return new Promise((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+  } catch (e) {
+    console.error("IDB load error:", e);
+    return null;
+  }
+}
+
+async function loadSavedState() {
+  if (navigator.storage && navigator.storage.persist) {
+    navigator.storage.persist();
+  }
+
+  let parsed = await loadFromIDB();
+  if (!parsed) {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try { parsed = JSON.parse(saved); } catch(e) {}
+    }
+  }
+  if (parsed) {
+    state = { ...state, ...parsed };
+  }
+}
+
+async function saveState() {
+  syncCurrentMonthToStorage();
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    await saveToIDB(state);
+  } catch(e) {
+    console.error("Error saving state:", e);
+  }
+}
+
+function importBackupPrompt() {
+  document.getElementById("importFile").click();
+}
+
+function handleFileImport(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (imported) {
+        state = Object.assign({}, state, imported);
+        await saveState();
+        buildLifetimeCycleDropdown();
+        if (state.currentUser) {
+          initSystem();
+        } else {
+          onCycleChange();
+        }
+        alert("डेटा सफलतापूर्वक रीस्टोर (Restore) कर लिया गया है!");
+      }
+    } catch(err) {
+      alert("डेटा लोड करने में त्रुटि हुई!");
+    }
+  };
+  reader.readAsText(file);
+}
+
+function getDaysBetween(startStr, endStr) {
+  const s = new Date(startStr);
+  const e = new Date(endStr);
+  return Math.ceil(Math.abs(e - s) / (1000 * 60 * 60 * 24)) + 1;
+}
+
+function getCycleDates() {
+  const dates = [];
+  const curr = new Date(state.cycleStartDate);
+  const end = new Date(state.cycleEndDate);
+  while (curr <= end) {
+    dates.push(new Date(curr));
+    curr.setDate(curr.getDate() + 1);
+  }
+  return dates;
+}
+
+function getPreviousCycleKey(currentStartStr) {
+  const d = new Date(currentStartStr);
+  d.setMonth(d.getMonth() - 1);
+  const pYear = d.getFullYear();
+  const pMonth = d.getMonth();
+  const pStart = new Date(pYear, pMonth, 21);
+  const pEnd = new Date(pYear, pMonth + 1, 20);
+  return `${pStart.toISOString().split('T')[0]}|${pEnd.toISOString().split('T')[0]}`;
+}
+
+function getCurrentMonthKey() {
+  return `${state.cycleStartDate}|${state.cycleEndDate}`;
+}
+
+function syncCurrentMonthToStorage() {
+  const mKey = getCurrentMonthKey();
+  if (!state.monthlyData) state.monthlyData = {};
+  state.monthlyData[mKey] = {
+    attendanceMap: { ...state.attendanceMap },
+    dryRation: JSON.parse(JSON.stringify(state.dryRation || [])),
+    freshRationData: { ...(state.freshRationData || { recAmt: 0, purAmt: 0, nextAmt: 0 }) },
+    casualDiets: JSON.parse(JSON.stringify(state.casualDiets || [])),
+    prisoners: JSON.parse(JSON.stringify(state.prisoners || [])),
+    dailyRate: state.dailyRate,
+    casualRates: { ...state.casualRates },
+    locked: state.monthlyData[mKey] ? state.monthlyData[mKey].locked : false
+  };
+}
+
+function loadMonthFromStorage() {
+  const mKey = getCurrentMonthKey();
+  if (!state.monthlyData) state.monthlyData = {};
+  
+  if (state.monthlyData[mKey]) {
+    const mData = state.monthlyData[mKey];
+    state.attendanceMap = { ...(mData.attendanceMap || {}) };
+    state.dryRation = JSON.parse(JSON.stringify(mData.dryRation || []));
+    state.freshRationData = { ...(mData.freshRationData || { recAmt: 0, purAmt: 0, nextAmt: 0 }) };
+    state.casualDiets = JSON.parse(JSON.stringify(mData.casualDiets || []));
+    state.prisoners = JSON.parse(JSON.stringify(mData.prisoners || []));
+    state.dailyRate = mData.dailyRate || state.dailyRate;
+    state.casualRates = { ...(mData.casualRates || state.casualRates) };
+  } else {
+    // Feature 2: Automatic Rollover Balance for Dry and Fresh Ration
+    const prevKey = getPreviousCycleKey(state.cycleStartDate);
+    let prevDryNext = [];
+    let prevFreshNext = 0;
+
+    if (state.monthlyData[prevKey]) {
+      const prevData = state.monthlyData[prevKey];
+      prevDryNext = (prevData.dryRation || []).map(r => {
+        const calc = calculateMultiBatchFIFOForData(r);
+        return { item: r.item, unit: r.unit, batches: calc.remainingBatches };
+      });
+      prevFreshNext = prevData.freshRationData.nextAmt || 0;
+    }
+
+    state.attendanceMap = {};
+    state.dryRation = prevDryNext.length > 0 ? prevDryNext.map(p => ({
+      item: p.item,
+      unit: p.unit || 'kg',
+      recBatches: p.batches.map(b => ({ qty: b.qty, rate: b.rate })),
+      purBatches: [],
+      nextQty: 0
+    })) : [];
+    state.freshRationData = { recAmt: prevFreshNext, purAmt: 0.00, nextAmt: 0.00 };
+    state.casualDiets = [];
+    state.prisoners = [];
+  }
+}
+
+function buildLifetimeCycleDropdown() {
+  const selector = document.getElementById("cycleSelector");
+  if (!selector) return;
+  selector.innerHTML = "";
+  
+  const today = new Date();
+  const startYear = today.getFullYear() - 2;
+  const endYear = today.getFullYear() + 3;
+
+  for (let y = startYear; y <= endYear; y++) {
+    for (let m = 0; m < 12; m++) {
+      const startDate = new Date(y, m, 21);
+      const endDate = new Date(y, m + 1, 20);
+
+      const startStr = startDate.toISOString().split('T')[0];
+      const endStr = endDate.toISOString().split('T')[0];
+      const days = getDaysBetween(startStr, endStr);
+
+      const startLbl = startDate.toLocaleString('default', { day: 'numeric', month: 'short', year: 'numeric' });
+      const endLbl = endDate.toLocaleString('default', { day: 'numeric', month: 'short', year: 'numeric' });
+      
+      const optVal = `${startStr}|${endStr}`;
+      const optText = `${startLbl} to ${endLbl} (${days} Days)`;
+
+      const opt = document.createElement("option");
+      opt.value = optVal;
+      opt.innerText = optText;
+      selector.appendChild(opt);
+    }
+  }
+
+  const currentKey = `${state.cycleStartDate}|${state.cycleEndDate}`;
+  selector.value = currentKey;
+  if (!selector.value) {
+    selector.selectedIndex = 24;
+    onCycleChange();
+  }
+}
+
+function changeMonthOffset(offset) {
+  const selector = document.getElementById("cycleSelector");
+  if (!selector) return;
+  const newIndex = selector.selectedIndex + offset;
+  if (newIndex >= 0 && newIndex < selector.options.length) {
+    selector.selectedIndex = newIndex;
+    onCycleChange();
+  }
+}
+
+function onCycleChange() {
+  syncCurrentMonthToStorage();
+  const selector = document.getElementById("cycleSelector");
+  if (!selector || !selector.value) return;
+  const val = selector.value;
+  const parts = val.split("|");
+  state.cycleStartDate = parts[0];
+  state.cycleEndDate = parts[1];
+  state.cycleDays = getDaysBetween(parts[0], parts[1]);
+  
+  const startD = new Date(parts[0]);
+  const endD = new Date(parts[1]);
+  const cycleLabel = `21 ${startD.toLocaleString('default', { month: 'short' })} – 20 ${endD.toLocaleString('default', { month: 'short' })} ${endD.getFullYear()}`;
+  
+  document.getElementById("currentCycleBadge").innerText = `MESS MONTH: ${cycleLabel.toUpperCase()} (${state.cycleDays} DAYS)`;
+  document.getElementById("stripCycleText").innerText = `${cycleLabel} (${state.cycleDays} Days)`;
+  document.getElementById("cycleSpanText").innerText = cycleLabel;
+  document.getElementById("cycleDaysCount").innerText = state.cycleDays;
+
+  loadMonthFromStorage();
+
+  // Feature 5: Check if locked for non-officer
+  const mKey = getCurrentMonthKey();
+  const isLocked = state.monthlyData[mKey] && state.monthlyData[mKey].locked;
+  if (isLocked && state.currentUser && state.currentUser !== "OFFICER") {
+    alert("🔒 यह महीना लॉक किया जा चुका है! पिछले महीने के रिकॉर्ड में सिर्फ MESS OFFICER ही बदलाव कर सकता है।");
+  }
+
+  document.getElementById("cfgCalculatedRate").value = `₹${state.dailyRate.toFixed(2)}`;
+  document.getElementById("stripRateText").innerText = `₹${state.dailyRate.toFixed(2)} / Day`;
+  document.getElementById("dashRate").innerText = `₹${state.dailyRate.toFixed(2)}`;
+
+  document.getElementById("casualRateA").value = state.casualRates.a;
+  document.getElementById("casualRateB").value = state.casualRates.b;
+  document.getElementById("casualRateC").value = state.casualRates.c;
+  document.getElementById("casualRateD").value = state.casualRates.d;
+  document.getElementById("casualRateE").value = state.casualRates.e;
+
+  document.getElementById("freshRecAmtInput").value = (state.freshRationData.recAmt || 0).toFixed(2);
+  document.getElementById("freshPurAmtInput").value = (state.freshRationData.purAmt || 0).toFixed(2);
+  document.getElementById("freshNextAmtInput").value = (state.freshRationData.nextAmt || 0).toFixed(2);
+
+  renderMembers();
+  renderDryRation();
+  updateFreshSummary();
+  renderCasualAndPrisoners();
+  renderAttendanceMatrix();
+  recalcAll();
+  saveState();
+}
+
+function saveAndLockRates() {
+  const mKey = getCurrentMonthKey();
+  if (state.monthlyData[mKey] && state.monthlyData[mKey].locked && state.currentUser !== "OFFICER") {
+    alert("🔒 यह महीना लॉक है। आप इसमें बदलाव नहीं कर सकते।");
+    return;
+  }
+  const rma = parseFloat(document.getElementById("cfgRmaAmount").value) || 3975.00;
+  const newRate = +(rma / state.cycleDays).toFixed(2);
+  
+  state.dailyRate = newRate;
+  state.casualRates = {
+    a: parseFloat(document.getElementById("casualRateA").value) || 35,
+    b: parseFloat(document.getElementById("casualRateB").value) || 100,
+    c: parseFloat(document.getElementById("casualRateC").value) || 65,
+    d: parseFloat(document.getElementById("casualRateD").value) || 130,
+    e: parseFloat(document.getElementById("casualRateE").value) || 140
+  };
+
+  document.getElementById("cfgCalculatedRate").value = `₹${newRate.toFixed(2)}`;
+  document.getElementById("stripRateText").innerText = `₹${newRate.toFixed(2)} / Day`;
+  document.getElementById("dashRate").innerText = `₹${newRate.toFixed(2)}`;
+
+  syncCurrentMonthToStorage();
+  renderAttendanceMatrix();
+  recalcAll();
+  saveState();
+  logAudit("RATES_LOCK", `Locked daily diet rate & casual rates for current month ${mKey}`);
+  alert("इस महीने के लिए रेट्स सफलतापूर्वक सेव और लॉक कर दिए गए हैं (पिछले महीनों पर इसका कोई असर नहीं पड़ेगा)।");
+}
+
+function handleLogin() {
+  const role = document.getElementById("loginRole").value;
+  const pin = document.getElementById("loginPin").value;
+  const now = Date.now();
+
+  if (state.lockoutExpiry[role] && now < state.lockoutExpiry[role]) {
+    const minsLeft = Math.ceil((state.lockoutExpiry[role] - now) / 60000);
+    alert(`ACCOUNT LOCKED!\nगलत पासवर्ड दर्ज करने के कारण यह अकाउंट ${minsLeft} मिनट के लिए लॉक है।`);
+    return;
+  }
+
+  const correctPin = state.passwords[role] || "1234";
+  if (pin === correctPin) {
+    state.loginAttempts[role] = 0;
+    state.currentUser = role;
+    document.getElementById("loginSection").style.display = "none";
+    document.getElementById("workspaceSection").style.display = "block";
+    document.getElementById("authStrip").style.display = "flex";
+    document.getElementById("loggedRoleText").innerText = `MESS ${role}`;
+    
+    if (role === "OFFICER") {
+      document.getElementById("officerAuditPanel").style.display = "block";
+      document.getElementById("nonOfficerAuditMsg").style.display = "none";
+    } else {
+      document.getElementById("officerAuditPanel").style.display = "none";
+      document.getElementById("nonOfficerAuditMsg").style.display = "block";
+    }
+
+    logAudit("LOGIN", `Logged in successfully as MESS ${role}`);
+    initSystem();
+  } else {
+    state.loginAttempts[role] = (state.loginAttempts[role] || 0) + 1;
+    const remaining = 5 - state.loginAttempts[role];
+    if (state.loginAttempts[role] >= 5) {
+      state.lockoutExpiry[role] = now + (24 * 60 * 60 * 1000);
+      saveState();
+      alert("SECURITY LOCKOUT!\n5 बार गलत पासवर्ड दर्ज करने के कारण अकाउंट 24 घंटे के लिए लॉक कर दिया गया है।");
+    } else {
+      alert(`गलत पासवर्ड! शेष प्रयास: ${remaining}`);
+    }
+  }
+}
+
+function changeMyPasswordPrompt() {
+  if (!state.currentUser) return;
+  const oldPin = prompt("Enter Current Password:");
+  if (oldPin !== state.passwords[state.currentUser]) {
+    alert("गलत वर्तमान पासवर्ड!");
+    return;
+  }
+  const newPin = prompt("Enter New 4-Digit Password:");
+  if (!newPin || newPin.length !== 4) {
+    alert("पासवर्ड 4 अंकों का होना चाहिए।");
+    return;
+  }
+  state.passwords[state.currentUser] = newPin;
+  saveState();
+  logAudit("PASSWORD_CHANGE", `Password changed for role ${state.currentUser}`);
+  alert("पासवर्ड सफलतापूर्वक बदल दिया गया है!");
+}
+
+function logout() {
+  exportBackupJSON();
+  state.currentUser = null;
+  document.getElementById("workspaceSection").style.display = "none";
+  document.getElementById("authStrip").style.display = "none";
+  document.getElementById("loginSection").style.display = "block";
+  document.getElementById("loginPin").value = "";
+}
+
+function switchView(viewId) {
+  document.querySelectorAll(".subview").forEach(el => el.style.display = "none");
+  document.getElementById(viewId).style.display = "block";
+  document.querySelectorAll(".cp-btn").forEach(btn => btn.classList.remove("active-tab"));
+  event.currentTarget.classList.add("active-tab");
+  recalcAll();
+}
+
+/* MEMBER REGISTRATION WITH SAFE ARCHIVING */
+function openMemberModal() {
+  const mKey = getCurrentMonthKey();
+  if (state.monthlyData[mKey] && state.monthlyData[mKey].locked && state.currentUser !== "OFFICER") {
+    alert("🔒 यह महीना लॉक है। आप नए मेंबर नहीं जोड़ सकते।");
+    return;
+  }
+  document.getElementById("memberModalOverlay").style.display = "flex";
+}
+function closeMemberModal() {
+  document.getElementById("memberModalOverlay").style.display = "none";
+}
+function submitMemberModal() {
+  const regts = document.getElementById("modalRegt").value.split(",").map(s => s.trim()).filter(s => s);
+  const rank = (document.getElementById("modalRank").value || "CT").toUpperCase();
+  const names = document.getElementById("modalName").value.split(",").map(s => s.trim()).filter(s => s);
+  const coy = document.getElementById("modalCoy").value;
+
+  if (regts.length === 0 || names.length === 0) {
+    alert("कृपया Regt No और Name सही से भरें।");
+    return;
+  }
+
+  let added = 0;
+  for (let i = 0; i < regts.length; i++) {
+    const regt = regts[i].toUpperCase();
+    const name = (names[i] || names[0]).toUpperCase();
+    let existing = state.members.find(m => m.regt === regt);
+    if (!existing) {
+      state.members.push({ regt, rank, name, coy, mobile: "", email: "", archived: false });
+      added++;
+    } else {
+      existing.archived = false;
+    }
+  }
+
+  closeMemberModal();
+  renderMembers();
+  renderAttendanceMatrix();
+  recalcAll();
+  saveState();
+  logAudit("MEMBER_ADD", `Registered ${added} members via form modal in ${coy}`);
+  alert(`${added} जवान सफलतापूर्वक रजिस्टर कर लिए गए हैं।`);
+}
+
+function openPrisonerModal() {
+  const mKey = getCurrentMonthKey();
+  if (state.monthlyData[mKey] && state.monthlyData[mKey].locked && state.currentUser !== "OFFICER") {
+    alert("🔒 यह महीना लॉक है।");
+    return;
+  }
+  document.getElementById("pModalFrom").value = state.cycleStartDate;
+  document.getElementById("pModalTo").value = state.cycleEndDate;
+  document.getElementById("prisonerModalOverlay").style.display = "flex";
+}
+function closePrisonerModal() {
+  document.getElementById("prisonerModalOverlay").style.display = "none";
+}
+function submitPrisonerModal() {
+  const regt = document.getElementById("pModalRegt").value.trim().toUpperCase();
+  const rankName = document.getElementById("pModalName").value.trim().toUpperCase();
+  const coy = document.getElementById("pModalCoy").value.trim().toUpperCase();
+  const from = document.getElementById("pModalFrom").value;
+  const to = document.getElementById("pModalTo").value;
+  const orderNo = document.getElementById("pModalOrder").value.trim();
+  const remarks = document.getElementById("pModalRemarks").value.trim();
+
+  if (!regt || !rankName || !from || !to) {
+    alert("कृपया Regt No, Name और Dates सही से भरें।");
+    return;
+  }
+
+  const diets = getDaysBetween(from, to);
+  state.prisoners.push({ regt, rankName, coy, from, to, orderNo, diets, rate: state.dailyRate, remarks });
+  closePrisonerModal();
+  renderCasualAndPrisoners();
+  recalcAll();
+  saveState();
+  logAudit("PRISONER_ADD", `Added prisoner RI record for ${rankName} (${diets} diets)`);
+  alert(`कैदी रिकॉर्ड सफलतापूर्वक जोड़ दिया गया है (${diets} दिन)।`);
+}
+
+function addCasualModalOpen() {
+  const mKey = getCurrentMonthKey();
+  if (state.monthlyData[mKey] && state.monthlyData[mKey].locked && state.currentUser !== "OFFICER") {
+    alert("🔒 यह महीना लॉक है।");
+    return;
+  }
+  const regt = prompt("Regt No:");
+  if (!regt) return;
+  const rankName = prompt("Rank & Name:");
+  const unit = prompt("Unit:", "OTHER UNIT");
+  const diets = parseFloat(prompt("Total Diets:")) || 1;
+  const cat = prompt("Select Category (a: Breakfast, b: B+L/D, c: L/D, d: L+D, e: Complete):", "e").toLowerCase();
+  
+  let rate = state.casualRates.e;
+  let catName = "e. Complete Diet";
+  if (cat === 'a') { rate = state.casualRates.a; catName = "a. Breakfast"; }
+  else if (cat === 'b') { rate = state.casualRates.b; catName = "b. Breakfast+Lunch/Dinner"; }
+  else if (cat === 'c') { rate = state.casualRates.c; catName = "c. Lunch/Dinner"; }
+  else if (cat === 'd') { rate = state.casualRates.d; catName = "d. Lunch+Dinner"; }
+
+  state.casualDiets.push({ regt, rankName, unit, category: catName, diets, rate, paid: false });
+  renderCasualAndPrisoners();
+  recalcAll();
+  saveState();
+  logAudit("CASUAL_ADD", `Added casual diet for ${rankName} under category ${catName}`);
+}
+
+function formatBatchString(batches, unit = "kg") {
+  const valid = (batches || []).filter(b => b.qty > 0.001);
+  if (valid.length === 0) return "Nil";
+  const formattedItems = valid.map(b => `${parseFloat(b.qty).toFixed(1)} ${unit}@${parseFloat(b.rate).toFixed(2)}`);
+  if (formattedItems.length === 1) return formattedItems[0];
+  if (formattedItems.length === 2) return `${formattedItems[0]} & ${formattedItems[1]}`;
+  const last = formattedItems.pop();
+  return `${formattedItems.join(", ")} & ${last}`;
+}
+
+function sumBatchQty(batches) { return (batches || []).reduce((acc, b) => acc + (parseFloat(b.qty) || 0), 0); }
+function sumBatchAmt(batches) { return (batches || []).reduce((acc, b) => acc + ((parseFloat(b.qty) || 0) * (parseFloat(b.rate) || 0)), 0); }
+
+function calculateMultiBatchFIFO(item) {
+  return calculateMultiBatchFIFOForData(item);
+}
+
+function calculateMultiBatchFIFOForData(item) {
+  const recBatches = (item.recBatches || []).map(b => ({ qty: parseFloat(b.qty) || 0, rate: parseFloat(b.rate) || 0 }));
+  const purBatches = (item.purBatches || []).map(b => ({ qty: parseFloat(b.qty) || 0, rate: parseFloat(b.rate) || 0 }));
+  const recQty = sumBatchQty(recBatches), recAmt = sumBatchAmt(recBatches);
+  const purQty = sumBatchQty(purBatches), purAmt = sumBatchAmt(purBatches);
+  const grandBatches = [...recBatches, ...purBatches];
+  const gQty = recQty + purQty, gAmt = recAmt + purAmt;
+  const nextQty = Math.min(gQty, Math.max(0, parseFloat(item.nextQty) || 0));
+  const expQty = Math.max(0, gQty - nextQty);
+
+  let remainingToDeplete = expQty;
+  const consumedBatches = [], remainingBatches = [];
+
+  grandBatches.forEach(b => {
+    if (b.qty <= 0) return;
+    if (remainingToDeplete >= b.qty) {
+      consumedBatches.push({ qty: b.qty, rate: b.rate });
+      remainingToDeplete -= b.qty;
+    } else if (remainingToDeplete > 0) {
+      consumedBatches.push({ qty: remainingToDeplete, rate: b.rate });
+      remainingBatches.push({ qty: b.qty - remainingToDeplete, rate: b.rate });
+      remainingToDeplete = 0;
+    } else {
+      remainingBatches.push({ qty: b.qty, rate: b.rate });
+    }
+  });
+
+  const expAmt = sumBatchAmt(consumedBatches);
+  const nextAmt = sumBatchAmt(remainingBatches);
+  return { recBatches, recQty, recAmt, purBatches, purQty, purAmt, grandBatches, gQty, gAmt, consumedBatches, expQty, expAmt, remainingBatches, nextQty, nextAmt };
+}
+
+function renderDryRation() {
+  const tbody = document.getElementById("dryRationBody");
+  let html = "";
+  let totRecAmt = 0, totPurAmt = 0, totGAmt = 0, totExpAmt = 0, totNextAmt = 0;
+
+  state.dryRation.forEach((r, idx) => {
+    const calc = calculateMultiBatchFIFO(r);
+    const unit = r.unit || "kg";
+    totRecAmt += calc.recAmt; totPurAmt += calc.purAmt; totGAmt += calc.gAmt; totExpAmt += calc.expAmt; totNextAmt += calc.nextAmt;
+
+    html += `
+      <tr>
+        <td><strong>${r.item}</strong><div style="font-size:0.7rem; color:#777;">Unit: ${unit}</div></td>
+        <td><div class="batch-detail-box">${formatBatchString(calc.recBatches, unit)}</div><div class="batch-total-sub">Qty: <strong>${calc.recQty.toFixed(1)}</strong></div></td>
+        <td class="amt-cell">₹${calc.recAmt.toFixed(2)}</td>
+        <td><div class="batch-detail-box">${formatBatchString(calc.purBatches, unit)}</div><div class="batch-total-sub">Qty: <strong>${calc.purQty.toFixed(1)}</strong></div></td>
+        <td class="amt-cell">₹${calc.purAmt.toFixed(2)}</td>
+        <td><div class="batch-detail-box">${formatBatchString(calc.grandBatches, unit)}</div><div class="batch-total-sub">Qty: <strong>${calc.gQty.toFixed(1)}</strong></div></td>
+        <td class="amt-cell">₹${calc.gAmt.toFixed(2)}</td>
+        <td><div class="batch-detail-box" style="border-left-color:var(--bsf-red);">${formatBatchString(calc.consumedBatches, unit)}</div><div class="batch-total-sub" style="color:var(--bsf-red);">Exp: <strong>${calc.expQty.toFixed(1)}</strong></div></td>
+        <td class="amt-cell" style="color:var(--bsf-red);">₹${calc.expAmt.toFixed(2)}</td>
+        <td>
+          <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;"><label style="font-size:0.75rem; font-weight:700;">Bal:</label><input type="number" step="0.1" class="form-control" style="width:80px; padding:2px;" value="${r.nextQty}" onchange="updateDryNextQty(${idx}, this.value)"></div>
+          <div class="batch-detail-box" style="border-left-color:var(--success);">${formatBatchString(calc.remainingBatches, unit)}</div>
+        </td>
+        <td class="amt-cell" style="color:var(--success);">₹${calc.nextAmt.toFixed(2)}</td>
+        <td style="white-space:nowrap;">
+          <button class="btn btn-gold btn-sm" style="margin-bottom:3px; width:100%;" onclick="addPurchaseBatchPrompt(${idx})">+ Pur. Batch</button>
+          <div style="display:flex; gap:4px;"><button class="btn btn-sm" style="flex:1;" onclick="addOpeningBatchPrompt(${idx})">+ Rec. Batch</button><button class="btn btn-danger btn-sm" onclick="deleteDryItemPrompt(${idx})">Del</button></div>
+        </td>
+      </tr>
+    `;
+  });
+  tbody.innerHTML = html;
+  document.getElementById("dryTotalRecAmt").innerText = `₹${totRecAmt.toFixed(2)}`;
+  document.getElementById("dryTotalPurAmt").innerText = `₹${totPurAmt.toFixed(2)}`;
+  document.getElementById("dryTotalGTotalAmt").innerText = `₹${totGAmt.toFixed(2)}`;
+  document.getElementById("dryTotalExpAmt").innerText = `₹${totExpAmt.toFixed(2)}`;
+  document.getElementById("dryTotalNextAmt").innerText = `₹${totNextAmt.toFixed(2)}`;
+}
+
+function updateDryNextQty(idx, val) {
+  const mKey = getCurrentMonthKey();
+  if (state.monthlyData[mKey] && state.monthlyData[mKey].locked && state.currentUser !== "OFFICER") {
+    alert("🔒 यह महीना लॉक है।");
+    return;
+  }
+  state.dryRation[idx].nextQty = parseFloat(val) || 0; renderDryRation(); recalcAll(); saveState();
+}
+
+function addOpeningBatchPrompt(idx) {
+  const mKey = getCurrentMonthKey();
+  if (state.monthlyData[mKey] && state.monthlyData[mKey].locked && state.currentUser !== "OFFICER") {
+    alert("🔒 यह महीना लॉक है।");
+    return;
+  }
+  const item = state.dryRation[idx];
+  const qty = parseFloat(prompt(`Enter Last Month Balance/Opening Qty (${item.unit}):`)); if (isNaN(qty) || qty <= 0) return;
+  const rate = parseFloat(prompt(`Enter Opening Rate per ${item.unit} (₹):`)); if (isNaN(rate) || rate < 0) return;
+  item.recBatches.push({ qty, rate });
+  renderDryRation(); recalcAll(); saveState();
+  logAudit("DRY_OPENING_BATCH", `Added opening batch to ${item.item}: ${qty} @ ${rate}`);
+}
+
+function addPurchaseBatchPrompt(idx) {
+  const mKey = getCurrentMonthKey();
+  if (state.monthlyData[mKey] && state.monthlyData[mKey].locked && state.currentUser !== "OFFICER") {
+    alert("🔒 यह महीना लॉक है।");
+    return;
+  }
+  const item = state.dryRation[idx];
+  const qty = parseFloat(prompt(`Enter Purchased Qty (${item.unit}):`)); if (isNaN(qty) || qty <= 0) return;
+  const rate = parseFloat(prompt(`Enter Purchase Rate per ${item.unit} (₹):`)); if (isNaN(rate) || rate < 0) return;
+  item.purBatches.push({ qty, rate }); renderDryRation(); recalcAll(); saveState();
+}
+
+function addNewDryItem() {
+  const mKey = getCurrentMonthKey();
+  if (state.monthlyData[mKey] && state.monthlyData[mKey].locked && state.currentUser !== "OFFICER") {
+    alert("🔒 यह महीना लॉक है।");
+    return;
+  }
+  const item = (prompt("Enter Item Name:") || "").toUpperCase(); if (!item) return;
+  const unit = (prompt("Unit:", "kg") || "kg").toLowerCase();
+  state.dryRation.push({ item, unit, recBatches: [], purBatches: [], nextQty: 0 });
+  renderDryRation(); recalcAll(); saveState();
+}
+
+function deleteDryItemPrompt(idx) {
+  const mKey = getCurrentMonthKey();
+  if (state.monthlyData[mKey] && state.monthlyData[mKey].locked && state.currentUser !== "OFFICER") {
+    alert("🔒 यह महीना लॉक है।");
+    return;
+  }
+  if (confirm("Delete?")) { state.dryRation.splice(idx, 1); renderDryRation(); recalcAll(); saveState(); }
+}
+
+function rollOverDryRation() {
+  const mKey = getCurrentMonthKey();
+  if (confirm("NEXT MONTH ROLLOVER:\nरोलओवर करने से पहले सिस्टम का बैकअप डाउनलोड करना अनिवार्य है। क्या आप इस महीने को लॉक करके अगले महीने में प्रवेश करना चाहते हैं?")) {
+    exportBackupJSON();
+    openDriveLink();
+
+    if (!state.monthlyData[mKey]) state.monthlyData[mKey] = {};
+    state.monthlyData[mKey].locked = true;
+
+    const selector = document.getElementById("cycleSelector");
+    if (selector && selector.selectedIndex < selector.options.length - 1) {
+      selector.selectedIndex += 1;
+      onCycleChange();
+    } else {
+      alert("Rollover Complete! Current month locked and next month initialized.");
+    }
+  }
+}
+
+// Feature 1: Exact Screen Match Print for Dry Ration
+function printDryRationSummary() {
+  let rowsHtml = "";
+  let totRecAmt = 0, totPurAmt = 0, totGAmt = 0, totExpAmt = 0, totNextAmt = 0;
+
+  state.dryRation.forEach((r, idx) => {
+    const calc = calculateMultiBatchFIFO(r);
+    const unit = r.unit || "kg";
+    totRecAmt += calc.recAmt; totPurAmt += calc.purAmt; totGAmt += calc.gAmt; totExpAmt += calc.expAmt; totNextAmt += calc.nextAmt;
+
+    rowsHtml += `
+      <tr>
+        <td><strong>${r.item}</strong><br><span style="font-size:0.75rem;">Unit: ${unit}</span></td>
+        <td>${formatBatchString(calc.recBatches, unit)}<br><strong>Qty: ${calc.recQty.toFixed(1)}</strong></td>
+        <td style="text-align:right;">₹${calc.recAmt.toFixed(2)}</td>
+        <td>${formatBatchString(calc.purBatches, unit)}<br><strong>Qty: ${calc.purQty.toFixed(1)}</strong></td>
+        <td style="text-align:right;">₹${calc.purAmt.toFixed(2)}</td>
+        <td>${formatBatchString(calc.grandBatches, unit)}<br><strong>Qty: ${calc.gQty.toFixed(1)}</strong></td>
+        <td style="text-align:right;">₹${calc.gAmt.toFixed(2)}</td>
+        <td>${formatBatchString(calc.consumedBatches, unit)}<br><strong style="color:red;">Exp: ${calc.expQty.toFixed(1)}</strong></td>
+        <td style="text-align:right; color:red;">₹${calc.expAmt.toFixed(2)}</td>
+        <td>Bal: ${r.nextQty}<br>${formatBatchString(calc.remainingBatches, unit)}</td>
+        <td style="text-align:right; color:green;">₹${calc.nextAmt.toFixed(2)}</td>
+      </tr>
+    `;
+  });
+
+  const tableHtml = `
+    <table class="print-table">
+      <thead>
+        <tr>
+          <th>ITEM NAME</th>
+          <th>RECEIVED FROM LAST MONTH</th>
+          <th style="text-align:right;">AMT (₹)</th>
+          <th>PURCHASED DURING MONTH</th>
+          <th style="text-align:right;">AMT (₹)</th>
+          <th>GRAND TOTAL QTY</th>
+          <th style="text-align:right;">AMT (₹)</th>
+          <th>EXPENDITURE (FIFO)</th>
+          <th style="text-align:right;">AMT (₹)</th>
+          <th>NEXT MONTH BALANCE</th>
+          <th style="text-align:right;">AMT (₹)</th>
+        </tr>
+      </thead>
+      <tbody>${rowsHtml}</tbody>
+      <tfoot>
+        <tr>
+          <td colspan="2"><strong>TOTAL DRY RATION (₹)</strong></td>
+          <td style="text-align:right;">₹${totRecAmt.toFixed(2)}</td>
+          <td></td>
+          <td style="text-align:right;">₹${totPurAmt.toFixed(2)}</td>
+          <td></td>
+          <td style="text-align:right;">₹${totGAmt.toFixed(2)}</td>
+          <td></td>
+          <td style="text-align:right; color:red;">₹${totExpAmt.toFixed(2)}</td>
+          <td></td>
+          <td style="text-align:right;">₹${totNextAmt.toFixed(2)}</td>
+        </tr>
+      </tfoot>
+    </table>
+  `;
+  executePrint("DRY RATION MONTHLY SUMMARY REPORT", tableHtml);
+}
+
+function updateFreshSummary() {
+  const mKey = getCurrentMonthKey();
+  if (state.monthlyData[mKey] && state.monthlyData[mKey].locked && state.currentUser !== "OFFICER") {
+    alert("🔒 यह महीना लॉक है।");
+    return;
+  }
+  const rec = parseFloat(document.getElementById("freshRecAmtInput").value) || 0;
+  const pur = parseFloat(document.getElementById("freshPurAmtInput").value) || 0;
+  const next = parseFloat(document.getElementById("freshNextAmtInput").value) || 0;
+  const gTotal = rec + pur, exp = Math.max(0, gTotal - next);
+  state.freshRationData = { recAmt: rec, purAmt: pur, nextAmt: next };
+  document.getElementById("freshGTotalCell").innerText = `₹${gTotal.toFixed(2)}`;
+  document.getElementById("freshExpCell").innerText = `₹${exp.toFixed(2)}`;
+  recalcAll(); saveState();
+}
+
+function downloadTemplateCSV() {
+  const csvContent = "data:text/csv;charset=utf-8,IRLA/REGT NO,RANK,NAME,COY,MOBILE NUMBER,EMAIL ID\n04125001,SI,RAMESH SINGH,A COY,9876543210,ramesh@bsf.gov.in";
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a"); link.setAttribute("href", encodedUri); link.setAttribute("download", "MEMBER_TEMPLATE.csv");
+  document.body.appendChild(link); link.click(); document.body.removeChild(link);
+}
+
+function handleStrictExcelUpload(event) {
+  const file = event.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const lines = e.target.result.split(/\r\n|\n/).map(l => l.trim()).filter(l => l.length > 0);
+    if (lines.length < 2) return;
+    let added = 0;
+    for (let i = 1; i < lines.length; i++) {
+      const p = lines[i].split(",").map(s => s.trim().replace(/["']/g, ''));
+      const regt = p[0], rank = p[1], name = p[2], coy = p[3];
+      if (regt && name && !state.members.some(m => m.regt === regt)) {
+        state.members.push({ regt, rank, name, coy, mobile: p[4] || "", email: p[5] || "", archived: false });
+        added++;
+      }
+    }
+    renderMembers(); renderAttendanceMatrix(); recalcAll(); saveState();
+    alert(`सफलतापूर्वक ${added} मेंबर अपलोड और सिंक हो गए हैं।`);
+  };
+  reader.readAsText(file);
+}
+
+// Feature 3: Safe Deletion (Archiving so previous months records remain intact)
+function renderMembers() {
+  const tbody = document.getElementById("membersTableBody");
+  let html = "";
+  const activeMembers = state.members.filter(m => !m.archived);
+  if (activeMembers.length === 0) {
+    html = `<tr><td colspan="8" style="text-align:center; padding:16px; color:#888;">No members registered yet. Use "+ OPEN FORM" or "UPLOAD EXCEL".</td></tr>`;
+  } else {
+    state.members.forEach((m, idx) => {
+      if (m.archived) return;
+      html += `<tr><td><strong>${m.regt}</strong></td><td>${m.rank}</td><td>${m.name}</td><td><span class="badge badge-og">${m.coy}</span></td><td>${m.mobile||'-'}</td><td>${m.email||'-'}</td><td><span class="badge badge-success">ACTIVE</span></td><td><button class="btn btn-danger btn-sm" onclick="archiveMember(${idx})">DEL</button></td></tr>`;
+    });
+  }
+  tbody.innerHTML = html;
+}
+
+function archiveMember(idx) {
+  const mKey = getCurrentMonthKey();
+  if (state.monthlyData[mKey] && state.monthlyData[mKey].locked && state.currentUser !== "OFFICER") {
+    alert("🔒 यह महीना लॉक है।");
+    return;
+  }
+  if (confirm("क्या आप इस मेंबर को हटाना चाहते हैं? (इसका पिछला रिकॉर्ड सुरक्षित रहेगा)")) {
+    state.members[idx].archived = true;
+    renderMembers(); renderAttendanceMatrix(); recalcAll(); saveState();
+  }
+}
+
+function deleteMember(idx) { archiveMember(idx); }
+
+function renderCasualAndPrisoners() {
+  let cHtml = "";
+  state.casualDiets.forEach((c, idx) => {
+    const amt = c.diets * c.rate;
+    cHtml += `<tr><td><strong>${c.regt}</strong></td><td>${c.rankName}</td><td>${c.unit}</td><td><span class="badge badge-og">${c.category}</span></td><td>${c.diets}</td><td>₹${c.rate.toFixed(2)}</td><td>₹${amt.toFixed(2)}</td><td><button class="btn btn-sm ${c.paid?'badge-success':'badge-danger'}" onclick="toggleCasualPaid(${idx})">${c.paid?'PAID':'PENDING'}</button></td><td><button class="btn btn-danger btn-sm" onclick="deleteCasual(${idx})">DEL</button></td></tr>`;
+  });
+  document.getElementById("casualTableBody").innerHTML = cHtml;
+
+  let pHtml = "";
+  state.prisoners.forEach((p, idx) => {
+    const amt = p.diets * p.rate;
+    pHtml += `<tr><td><strong>${p.regt}</strong></td><td>${p.rankName}</td><td>${p.coy}</td><td>${p.from} to ${p.to} (${p.diets} Days)</td><td>${p.orderNo}</td><td>${p.diets}</td><td>₹${p.rate.toFixed(2)}</td><td>₹${amt.toFixed(2)}</td><td>${p.remarks}</td><td><button class="btn btn-danger btn-sm" onclick="deletePrisoner(${idx})">DEL</button></td></tr>`;
+  });
+  document.getElementById("prisonerTableBody").innerHTML = pHtml;
+}
+
+function toggleCasualPaid(idx) { state.casualDiets[idx].paid = !state.casualDiets[idx].paid; renderCasualAndPrisoners(); saveState(); }
+function deleteCasual(idx) { state.casualDiets.splice(idx, 1); renderCasualAndPrisoners(); recalcAll(); saveState(); }
+function deletePrisoner(idx) { state.prisoners.splice(idx, 1); renderCasualAndPrisoners(); recalcAll(); saveState(); }
+
+function renderAttendanceMatrix() {
+  const dates = getCycleDates();
+  const selectedCoy = document.getElementById("attendanceCoyFilter").value;
+  const activeMembers = state.members.filter(m => m.coy === selectedCoy);
+  
+  let hHtml = `<th class="sticky-col">REGT NO</th><th class="sticky-col" style="left:75px;">RANK & NAME</th>`;
+  dates.forEach((d) => { hHtml += `<th>${d.getDate()}<br><span style="font-size:0.62rem;">${d.toLocaleString('default', { month: 'short' })}</span></th>`; });
+  hHtml += `<th>TOTAL DIETS</th><th>ACTUAL AMT (₹)</th><th>ROUND OFF (₹)</th>`;
+  document.getElementById("matrixHeaderRow").innerHTML = hHtml;
+
+  let bHtml = "", coyTotDiets = 0, coyTotRound = 0;
+  if (activeMembers.length === 0) {
+    bHtml = `<tr><td colspan="${dates.length + 5}" style="text-align:center; padding:16px;">No personnel in ${selectedCoy}.</td></tr>`;
+  } else {
+    activeMembers.forEach(m => {
+      let memDiets = 0;
+      bHtml += `<tr><td class="sticky-col">${m.regt}</td><td class="sticky-col" style="left:75px;">${m.rank} ${m.name}</td>`;
+      dates.forEach((d, idx) => {
+        const key = `${m.regt}_d${idx}`;
+        if (state.attendanceMap[key] === undefined) state.attendanceMap[key] = 1.0;
+        const val = state.attendanceMap[key];
+        memDiets += parseFloat(val) || 0;
+        bHtml += `<td><input type="number" step="0.1" min="0" max="2" value="${val}" class="diet-input" onchange="updateDietVal('${m.regt}', ${idx}, this.value)"></td>`;
+      });
+      const actualAmt = memDiets * state.dailyRate, roundAmt = Math.round(actualAmt);
+      coyTotDiets += memDiets; coyTotRound += roundAmt;
+      bHtml += `<td style="font-weight:700;">${memDiets.toFixed(1)}</td><td>₹${actualAmt.toFixed(2)}</td><td style="font-weight:900; color:var(--bsf-red);">₹${roundAmt}</td></tr>`;
+    });
+  }
+  document.getElementById("matrixBody").innerHTML = bHtml;
+
+  let fHtml = `<td colspan="2" class="sticky-col" style="font-weight:900;">TOTAL (${selectedCoy})</td>`;
+  dates.forEach((d, idx) => {
+    let daySum = 0; activeMembers.forEach(m => { daySum += parseFloat(state.attendanceMap[`${m.regt}_d${idx}`]) || 0; });
+    fHtml += `<td style="font-weight:700;">${daySum.toFixed(1)}</td>`;
+  });
+  fHtml += `<td style="font-weight:900;">${coyTotDiets.toFixed(1)}</td><td></td><td style="font-weight:900; color:var(--bsf-red);">₹${coyTotRound}</td>`;
+  document.getElementById("matrixFooterRow").innerHTML = fHtml;
+}
+
+function updateDietVal(regt, dayIdx, val) {
+  const mKey = getCurrentMonthKey();
+  if (state.monthlyData[mKey] && state.monthlyData[mKey].locked && state.currentUser !== "OFFICER") {
+    alert("🔒 यह महीना लॉक है। आप अटेंडेंस नहीं बदल सकते।");
+    return;
+  }
+  state.attendanceMap[`${regt}_d${dayIdx}`] = parseFloat(val) || 0; renderAttendanceMatrix(); recalcAll(); saveState();
+}
+
+function bulkFillAll(val) {
+  const mKey = getCurrentMonthKey();
+  if (state.monthlyData[mKey] && state.monthlyData[mKey].locked && state.currentUser !== "OFFICER") {
+    alert("🔒 यह महीना लॉक है।");
+    return;
+  }
+  const dates = getCycleDates();
+  const selectedCoy = document.getElementById("attendanceCoyFilter").value;
+  state.members.filter(m => m.coy === selectedCoy).forEach(m => {
+    dates.forEach((d, idx) => { state.attendanceMap[`${m.regt}_d${idx}`] = val; });
+  });
+  renderAttendanceMatrix(); recalcAll(); saveState();
+}
+
+function recalcAll() {
+  let dryPur = 0, dryRec = 0, dryExp = 0, dryNext = 0;
+  state.dryRation.forEach(r => {
+    const calc = calculateMultiBatchFIFO(r);
+    dryRec += calc.recAmt; dryPur += calc.purAmt; dryExp += calc.expAmt; dryNext += calc.nextAmt;
+  });
+  const dryGrand = dryPur + dryRec;
+  const freshRec = state.freshRationData.recAmt || 0, freshPur = state.freshRationData.purAmt || 0;
+  const freshGrand = freshRec + freshPur, freshNext = state.freshRationData.nextAmt || 0, freshExp = Math.max(0, freshGrand - freshNext);
+
+  let regDiets = 0;
+  state.members.forEach(m => {
+    getCycleDates().forEach((d, idx) => { regDiets += parseFloat(state.attendanceMap[`${m.regt}_d${idx}`]) || 0; });
+  });
+
+  let casualDietsCatA = 0, casualDietsCatB = 0, casualDietsCatC = 0, casualDietsCatD = 0, casualDietsCatE = 0;
+  state.casualDiets.forEach(c => {
+    if (c.category.startsWith("a.")) casualDietsCatA += c.diets;
+    else if (c.category.startsWith("b.")) casualDietsCatB += c.diets;
+    else if (c.category.startsWith("c.")) casualDietsCatC += c.diets;
+    else if (c.category.startsWith("d.")) casualDietsCatD += c.diets;
+    else casualDietsCatE += c.diets;
+  });
+
+  let casualDietsTotal = state.casualDiets.reduce((acc, c) => acc + c.diets, 0);
+  let prisonerDiets = state.prisoners.reduce((acc, p) => acc + p.diets, 0);
+  let totalDiets = regDiets + casualDietsTotal + prisonerDiets;
+
+  const totalExp = dryExp + freshExp;
+
+  let regularRecovery = regDiets * state.dailyRate;
+  let prisonerRecovery = prisonerDiets * state.dailyRate;
+  let casualRecoveryA = casualDietsCatA * state.casualRates.a;
+  let casualRecoveryB = casualDietsCatB * state.casualRates.b;
+  let casualRecoveryC = casualDietsCatC * state.casualRates.c;
+  let casualRecoveryD = casualDietsCatD * state.casualRates.d;
+  let casualRecoveryE = casualDietsCatE * state.casualRates.e;
+  let totalCasualRecovery = casualRecoveryA + casualRecoveryB + casualRecoveryC + casualRecoveryD + casualRecoveryE;
+
+  let totalMessRecovery = regularRecovery + prisonerRecovery + totalCasualRecovery;
+
+  const sumBody = document.getElementById("masterSummaryBody");
+  if (sumBody) {
+    sumBody.innerHTML = `
+      <tr><td>a</td><td>Dry Ration Purchased during the Month</td><td style="text-align:right;">₹${dryPur.toFixed(2)}</td></tr>
+      <tr><td>b</td><td>Dry Ration Received from Last Month Balance</td><td style="text-align:right;">₹${dryRec.toFixed(2)}</td></tr>
+      <tr><td>c</td><td>Grand Total (Purchased + Received) [Dry]</td><td style="text-align:right;">₹${dryGrand.toFixed(2)}</td></tr>
+      <tr><td>d</td><td>Dry Ration Expense during the Month</td><td style="text-align:right;">₹${dryExp.toFixed(2)}</td></tr>
+      <tr><td>e</td><td>Dry Ration Next Month Balance</td><td style="text-align:right;">₹${dryNext.toFixed(2)}</td></tr>
+      <tr><td>f</td><td>Fresh Ration Received from Last Month Balance</td><td style="text-align:right;">₹${freshRec.toFixed(2)}</td></tr>
+      <tr><td>g</td><td>Fresh Ration Purchased during the Month</td><td style="text-align:right;">₹${freshPur.toFixed(2)}</td></tr>
+      <tr><td>h</td><td>Fresh Ration Grand Total (Purchased + Received)</td><td style="text-align:right;">₹${freshGrand.toFixed(2)}</td></tr>
+      <tr><td>i</td><td>Fresh Ration Expenditure during the Month</td><td style="text-align:right;">₹${freshExp.toFixed(2)}</td></tr>
+      <tr><td>j</td><td>Fresh Ration Next Month Balance</td><td style="text-align:right;">₹${freshNext.toFixed(2)}</td></tr>
+      <tr style="background:#EBF2DC; font-weight:700;"><td>k</td><td>Total Expenditure during Month (Fresh + Dry)</td><td style="text-align:right;">₹${totalExp.toFixed(2)}</td></tr>
+      <tr><td>l</td><td>Per Head Per Day Regular Diet Charges (Locked Rate)</td><td style="text-align:right;">₹${state.dailyRate.toFixed(2)}</td></tr>
+      <tr><td>m1</td><td>Casual Rate: a. Breakfast (${casualDietsCatA} Diets @ ₹${state.casualRates.a.toFixed(2)})</td><td style="text-align:right;">₹${casualRecoveryA.toFixed(2)}</td></tr>
+      <tr><td>m2</td><td>Casual Rate: b. Breakfast+Lunch/Dinner (${casualDietsCatB} Diets @ ₹${state.casualRates.b.toFixed(2)})</td><td style="text-align:right;">₹${casualRecoveryB.toFixed(2)}</td></tr>
+      <tr><td>m3</td><td>Casual Rate: c. Lunch/Dinner (${casualDietsCatC} Diets @ ₹${state.casualRates.c.toFixed(2)})</td><td style="text-align:right;">₹${casualRecoveryC.toFixed(2)}</td></tr>
+      <tr><td>m4</td><td>Casual Rate: d. Lunch+Dinner (${casualDietsCatD} Diets @ ₹${state.casualRates.d.toFixed(2)})</td><td style="text-align:right;">₹${casualRecoveryD.toFixed(2)}</td></tr>
+      <tr><td>m5</td><td>Casual Rate: e. Complete Diet (${casualDietsCatE} Diets @ ₹${state.casualRates.e.toFixed(2)})</td><td style="text-align:right;">₹${casualRecoveryE.toFixed(2)}</td></tr>
+      <tr><td>n</td><td>Total Diets (Regular + Casual + Prisoner)</td><td style="text-align:right;">${totalDiets.toFixed(1)}</td></tr>
+      <tr style="background:#FFF9C4; font-weight:900;"><td>o</td><td>Total Mess Recovery</td><td style="text-align:right; color:var(--bsf-red);">₹${totalMessRecovery.toFixed(2)}</td></tr>
+    `;
+  }
+
+  const dashDiets = document.getElementById("dashDiets");
+  const dashExp = document.getElementById("dashExp");
+  const dashIncome = document.getElementById("dashIncome");
+  if (dashDiets) dashDiets.innerText = totalDiets.toFixed(1);
+  if (dashExp) dashExp.innerText = `₹${totalExp.toFixed(2)}`;
+  if (dashIncome) dashIncome.innerText = `₹${totalMessRecovery.toFixed(2)}`;
+}
+
+/* SMART PRINT */
+function executePrint(title, tableHtml) {
+  const container = document.getElementById("printableContainer");
+  const cycleText = document.getElementById("stripCycleText").innerText.toUpperCase();
+  container.innerHTML = `
+    <div class="print-header">
+      <h2>BORDER SECURITY FORCE - 125 BATTALION</h2>
+      <h4>BASANTAR WARRIORS - MESS MANAGEMENT SYSTEM</h4>
+      <p>PERIOD: ${cycleText}</p>
+      <div style="font-size:1.05rem; font-weight:900; margin-top:4px; text-decoration:underline;">${title}</div>
+    </div>
+    ${tableHtml}
+    <div class="print-signatures">
+      <div>_______________________<br>MESS NCO</div>
+      <div>_______________________<br>MESS SO</div>
+      <div>_______________________<br>COY COMMANDER</div>
+    </div>
+  `;
+  window.print();
+}
+
+function printFormattedMessCutting() {
+  const selectedCoy = document.getElementById("attendanceCoyFilter").value;
+  const activeMembers = state.members.filter(m => m.coy === selectedCoy);
+  let totDiets = 0, totAmt = 0, totRound = 0, rowsHtml = "";
+
+  activeMembers.forEach((m) => {
+    let diets = 0;
+    getCycleDates().forEach((d, dIdx) => { diets += parseFloat(state.attendanceMap[`${m.regt}_d${dIdx}`]) || 0; });
+    if (diets <= 0) return;
+    const amt = diets * state.dailyRate, roundAmt = Math.round(amt);
+    totDiets += diets; totAmt += amt; totRound += roundAmt;
+    rowsHtml += `<tr><td>${m.regt}</td><td>${m.rank}</td><td>${m.name}</td><td>${m.coy}</td><td style="text-align:right;">${diets.toFixed(1)}</td><td style="text-align:right;">₹${state.dailyRate.toFixed(2)}</td><td style="text-align:right;">₹${amt.toFixed(2)}</td><td style="text-align:right; font-weight:900;">₹${roundAmt}</td><td></td></tr>`;
+  });
+
+  const tableHtml = `<table class="print-table"><thead><tr><th>REGT NO</th><th>RANK</th><th>NAME</th><th>COY</th><th style="text-align:right;">DIET</th><th style="text-align:right;">RATE</th><th style="text-align:right;">AMOUNT (₹)</th><th style="text-align:right;">ROUND OFF (₹)</th><th>REMARKS</th></tr></thead><tbody>${rowsHtml}</tbody><tfoot><tr><td colspan="4"><strong>COY TOTAL (${selectedCoy})</strong></td><td style="text-align:right;">${totDiets.toFixed(1)}</td><td></td><td style="text-align:right;">₹${totAmt.toFixed(2)}</td><td style="text-align:right; font-weight:900;">₹${totRound}</td><td></td></tr></tfoot></table>`;
+  executePrint(`COY MESS CUTTING BILL - ${selectedCoy}`, tableHtml);
+}
+
+function printCasualReport() {
+  let totDiets = 0, totAmt = 0, totRound = 0, rows = "";
+  state.casualDiets.forEach(c => {
+    if (c.diets <= 0) return;
+    const amt = c.diets * c.rate, rAmt = Math.round(amt);
+    totDiets += c.diets; totAmt += amt; totRound += rAmt;
+    rows += `<tr><td>${c.regt}</td><td>${c.rankName}</td><td>${c.unit}</td><td>${c.category}</td><td style="text-align:right;">${c.diets}</td><td style="text-align:right;">₹${c.rate.toFixed(2)}</td><td style="text-align:right;">₹${amt.toFixed(2)}</td><td style="text-align:right;">₹${rAmt}</td><td>${c.paid?'PAID':'PENDING'}</td></tr>`;
+  });
+  const tableHtml = `<table class="print-table"><thead><tr><th>REGT NO</th><th>RANK & NAME</th><th>UNIT</th><th>CATEGORY</th><th style="text-align:right;">DIETS</th><th style="text-align:right;">RATE</th><th style="text-align:right;">AMOUNT</th><th style="text-align:right;">ROUND</th><th>STATUS</th></tr></thead><tbody>${rows}</tbody><tfoot><tr><td colspan="4"><strong>TOTAL</strong></td><td style="text-align:right;">${totDiets.toFixed(1)}</td><td></td><td style="text-align:right;">₹${totAmt.toFixed(2)}</td><td style="text-align:right; font-weight:900;">₹${totRound}</td><td></td></tr></tfoot></table>`;
+  executePrint("CASUAL DIET OFFICIAL STATEMENT", tableHtml);
+}
+
+function printPrisonerReport() {
+  let totDiets = 0, totAmt = 0, totRound = 0, rows = "";
+  state.prisoners.forEach(p => {
+    if (p.diets <= 0) return;
+    const amt = p.diets * p.rate, rAmt = Math.round(amt);
+    totDiets += p.diets; totAmt += amt; totRound += rAmt;
+    rows += `<tr><td>${p.regt}</td><td>${p.rankName}</td><td>${p.coy}</td><td>${p.from} to ${p.to} (${p.diets} Days)</td><td>${p.orderNo}</td><td style="text-align:right;">${p.diets}</td><td style="text-align:right;">₹${p.rate.toFixed(2)}</td><td style="text-align:right;">₹${amt.toFixed(2)}</td><td style="text-align:right;">₹${rAmt}</td><td>${p.remarks}</td></tr>`;
+  });
+  const tableHtml = `<table class="print-table"><thead><tr><th>REGT NO</th><th>RANK & NAME</th><th>COY</th><th>PERIOD</th><th>ORDER NO</th><th style="text-align:right;">DIET</th><th style="text-align:right;">RATE</th><th style="text-align:right;">AMOUNT</th><th style="text-align:right;">ROUND</th><th>REMARKS</th></tr></thead><tbody>${rows}</tbody><tfoot><tr><td colspan="5"><strong>TOTAL</strong></td><td style="text-align:right;">${totDiets.toFixed(1)}</td><td></td><td style="text-align:right;">₹${totAmt.toFixed(2)}</td><td style="text-align:right; font-weight:900;">₹${totRound}</td><td></td></tr></tfoot></table>`;
+  executePrint("PRISONER (RI) DIET RECOVERY BILL", tableHtml);
+}
+
+function printOfficialMasterSummary() {
+  const sumRows = document.querySelectorAll("#masterSummaryTable tbody tr");
+  let rowsHtml = "";
+  sumRows.forEach(tr => {
+    const tds = tr.querySelectorAll("td");
+    rowsHtml += `<tr><td style="width:50px;">${tds[0].innerText}</td><td>${tds[1].innerText}</td><td style="text-align:right; font-weight:700;">${tds[2].innerText}</td></tr>`;
+  });
+  const tableHtml = `<table class="print-table"><thead><tr><th>SL</th><th>HEAD OF ACCOUNT / SUMMARY ITEM</th><th style="text-align:right;">AMOUNT (₹) / VALUE</th></tr></thead><tbody>${rowsHtml}</tbody></table>`;
+  executePrint("MASTER MONTHLY FINANCIAL SUMMARY", tableHtml);
+}
+
+function exportBackupJSON() {
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
+  const dlAnchor = document.createElement('a'); dlAnchor.setAttribute("href", dataStr); dlAnchor.setAttribute("download", `125_BSF_MESS_${state.cycleStartDate}.json`);
+  document.body.appendChild(dlAnchor); dlAnchor.click(); document.body.removeChild(dlAnchor);
+  logAudit("BACKUP_EXPORT", "Exported system backup.");
+}
+
+function openDriveLink() { window.open("https://drive.google.com/drive/u/0/my-drive", "_blank"); }
+
+function logAudit(action, details) {
+  state.auditLogs.unshift({ time: new Date().toLocaleString(), role: state.currentUser || "SYSTEM", action, details });
+  renderAuditLogs(); saveState();
+}
+
+function renderAuditLogs() {
+  const tbody = document.getElementById("auditTrailBody");
+  if (!tbody) return;
+  let html = "";
+  state.auditLogs.slice(0, 50).forEach(l => {
+    html += `<tr><td>${l.time}</td><td><strong>${l.role}</strong></td><td>${l.action}</td><td>${l.details}</td></tr>`;
+  });
+  tbody.innerHTML = html;
+}
+
+async function initSystem() {
+  await loadSavedState();
+  buildLifetimeCycleDropdown();
+  onCycleChange();
+  renderMembers();
+  renderDryRation();
+  updateFreshSummary();
+  renderCasualAndPrisoners();
+  renderAttendanceMatrix();
+  renderAuditLogs();
+  recalcAll();
+}
+
+window.onload = async function() {
+  await loadSavedState();
+  buildLifetimeCycleDropdown();
+  onCycleChange();
+};
+</script>
+</body>
+</html>
